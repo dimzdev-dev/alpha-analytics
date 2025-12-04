@@ -3,6 +3,9 @@ const STORAGE_KEY_TRADES = "tradeAnalytics_trades";
 const STORAGE_KEY_META = "tradeAnalytics_meta";
 const DEFAULT_CAPITAL = 10000;
 const IMPORT_DELAY_MS = 1200;
+const CURRENT_VERSION = "1.0.0"; // même valeur que dans version.json
+const STORAGE_KEY_VERSION = "tradeAnalytics_version";
+
 
 let allTrades = [];
 let accountMeta = null;
@@ -909,6 +912,81 @@ function saveToStorage() {
     localStorage.setItem(STORAGE_KEY_META, JSON.stringify(accountMeta));
 }
 
+function compareVersions(a, b) {
+    // "1.0.0" -> [1,0,0]
+    const pa = a.split(".").map(n => parseInt(n, 10));
+    const pb = b.split(".").map(n => parseInt(n, 10));
+    const len = Math.max(pa.length, pb.length);
+
+    for (let i = 0; i < len; i++) {
+        const va = pa[i] || 0;
+        const vb = pb[i] || 0;
+        if (va > vb) return 1;
+        if (va < vb) return -1;
+    }
+    return 0;
+}
+
+function checkForUpdate() {
+    // Ne pas checker en local file://
+    if (location.protocol === "file:") return;
+
+    fetch("version.json?cb=" + Date.now())
+        .then(res => {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+        })
+        .then(data => {
+            const remoteVersion = data.version || "0.0.0";
+            const changelog = data.changelog || "";
+
+            const storedVersion = localStorage.getItem(STORAGE_KEY_VERSION) || CURRENT_VERSION;
+
+            // Si la version distante est plus récente
+            if (compareVersions(remoteVersion, CURRENT_VERSION) === 1) {
+                // Sauvegarde la dernière version vue
+                localStorage.setItem(STORAGE_KEY_VERSION, remoteVersion);
+                showUpdateModal(remoteVersion, changelog);
+            }
+        })
+        .catch(err => {
+            console.warn("Erreur checkForUpdate:", err);
+        });
+}
+
+function showUpdateModal(version, changelog) {
+    const modal = document.getElementById("update-modal");
+    const changelogEl = document.getElementById("update-modal-changelog");
+    const closeBtn = document.getElementById("update-modal-close");
+    const laterBtn = document.getElementById("update-remind-later");
+    const reloadBtn = document.getElementById("update-reload-now");
+
+    if (!modal) return;
+
+    changelogEl.textContent = changelog
+        ? `Notes de version (${version}) : ${changelog}`
+        : `Version ${version} disponible.`;
+
+    const close = () => {
+        modal.classList.add("closing");
+        setTimeout(() => {
+            modal.classList.remove("active");
+            modal.classList.remove("closing");
+        }, 200);
+    };
+
+    closeBtn?.addEventListener("click", close);
+    laterBtn?.addEventListener("click", close);
+
+    reloadBtn?.addEventListener("click", () => {
+        // Force un rechargement complet
+        window.location.reload(true);
+    });
+
+    modal.classList.add("active");
+}
+
+
 // ===== Filtres : symbole =====
 function populateSymbolFilter() {
     const select = document.getElementById("filter-symbol");
@@ -1422,6 +1500,8 @@ document.addEventListener("DOMContentLoaded", () => {
     setupFiltersUi();
     setupInstallButton();
     setupSmoothScroll();
+    checkForUpdate();
+
 
 
     populateSymbolFilter();
