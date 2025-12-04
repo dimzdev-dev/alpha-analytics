@@ -3,8 +3,10 @@ const STORAGE_KEY_TRADES = "tradeAnalytics_trades";
 const STORAGE_KEY_META = "tradeAnalytics_meta";
 const DEFAULT_CAPITAL = 10000;
 const IMPORT_DELAY_MS = 1200;
-const CURRENT_VERSION = "1.4.1"; // même valeur que dans version.json
+const CURRENT_VERSION = "1.6.1"; // même valeur que dans version.json
 const STORAGE_KEY_VERSION = "tradeAnalytics_version";
+const VERSION_CHECK_URL = "https://raw.githubusercontent.com/dimzdev-dev/alpha-analytics/refs/heads/main/version.json";
+
 
 
 let allTrades = [];
@@ -961,36 +963,50 @@ function checkForUpdate() {
         });
 }
 
+function hardReloadApp() {
+    // Force un vrai rechargement + bypass du cache
+    const url = new URL(window.location.href);
+    url.searchParams.set("v", Date.now().toString());
+    window.location.replace(url.toString());
+}
+
+
 function showUpdateModal(version, changelog) {
-    const modal = document.getElementById("update-modal");
-    const changelogEl = document.getElementById("update-modal-changelog");
-    const closeBtn = document.getElementById("update-modal-close");
-    const laterBtn = document.getElementById("update-remind-later");
-    const reloadBtn = document.getElementById("update-reload-now");
+    const modal    = document.getElementById("update-modal");
+    const btnLater = document.getElementById("btn-update-later");
+    const btnNow   = document.getElementById("btn-update-now");
 
     if (!modal) return;
 
-    changelogEl.textContent = changelog
-        ? `Notes de version (${version}) : ${changelog}`
-        : `Version ${version} disponible.`;
-
-    const close = () => {
-        modal.classList.add("closing");
-        setTimeout(() => {
+    // Bouton "Plus tard"
+    if (btnLater) {
+        btnLater.addEventListener("click", () => {
             modal.classList.remove("active");
-            modal.classList.remove("closing");
-        }, 200);
-    };
+        });
+    }
 
-    closeBtn?.addEventListener("click", close);
-    laterBtn?.addEventListener("click", close);
+    // Bouton "Mettre à jour"
+    if (btnNow) {
+        btnNow.addEventListener("click", () => {
+            // on cache le modal
+            modal.classList.remove("active");
 
-    reloadBtn?.addEventListener("click", () => {
-        // Force un rechargement complet
-        window.location.reload(true);
-    });
+            // on affiche l'overlay de chargement avec un texte spécial
+            const overlay = document.getElementById("loading-overlay");
+            if (overlay) {
+                overlay.classList.remove("hidden");
+                const txt = overlay.querySelector(".loading-text");
+                if (txt) {
+                    txt.textContent = "Mise à jour de l'application...";
+                }
+            }
 
-    modal.classList.add("active");
+            // petit délai pour laisser l'animation se lancer
+            setTimeout(() => {
+                hardReloadApp();      // ⬅️ à la place de window.location.reload()
+            }, 200);
+        });
+    }
 }
 
 
@@ -1535,6 +1551,3 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 });
-
-
-
