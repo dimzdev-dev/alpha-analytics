@@ -561,6 +561,13 @@ function updateAccountDisplay() {
     }
 }
 
+function updateFooterVersion() {
+    const el = document.getElementById("footer-app-info");
+    if (!el) return;
+    el.textContent = `Alpha-Analytics · App locale · v${CURRENT_VERSION}`;
+}
+
+
 // ===== Devise & format monnaie =====
 function getCurrencySymbol() {
     return currentCurrency === "USD" ? "$" : "€";
@@ -1500,6 +1507,9 @@ document.addEventListener("DOMContentLoaded", () => {
     setupFiltersUi();
     setupInstallButton();
     setupSmoothScroll();
+
+    updateFooterVersion()
+
     checkForUpdate();
     setInterval(checkForUpdate, 30000);
 
@@ -1525,4 +1535,3 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 });
-
