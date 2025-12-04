@@ -1501,6 +1501,7 @@ document.addEventListener("DOMContentLoaded", () => {
     setupInstallButton();
     setupSmoothScroll();
     checkForUpdate();
+    setInterval(checkForUpdate, 30000);
 
 
 
@@ -1524,3 +1525,4 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 });
+
