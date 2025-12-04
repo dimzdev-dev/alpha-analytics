@@ -474,6 +474,36 @@
     </div>
 </div>
 
+<!-- MODAL MISE À JOUR -->
+<div id="update-modal" class="modal-backdrop">
+  <div class="modal-panel">
+    <div class="modal-header">
+      <div class="modal-title">
+        <i class="fa-solid fa-rotate"></i> Nouvelle version disponible
+      </div>
+      <button type="button" class="modal-close-btn" id="update-modal-close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+
+    <p class="text-muted mt-2">
+      Une nouvelle version d’Alpha-Analytics est disponible.
+    </p>
+
+    <p class="text-muted mt-2" id="update-modal-changelog"></p>
+
+    <div class="flex mt-3" style="justify-content: flex-end;">
+      <button type="button" class="btn btn-outline" id="update-remind-later">
+        Plus tard
+      </button>
+      <button type="button" class="btn btn-primary" id="update-reload-now">
+        <i class="fa-solid fa-rotate-right"></i> Mettre à jour
+      </button>
+    </div>
+  </div>
+</div>
+
+
 
 
     <!-- Chart.js -->
