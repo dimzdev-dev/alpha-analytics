@@ -3,7 +3,7 @@ const STORAGE_KEY_TRADES = "tradeAnalytics_trades";
 const STORAGE_KEY_META = "tradeAnalytics_meta";
 const DEFAULT_CAPITAL = 10000;
 const IMPORT_DELAY_MS = 1200;
-const CURRENT_VERSION = "1.0.5"; // même valeur que dans version.json
+const CURRENT_VERSION = "1.0.7"; // même valeur que dans version.json
 const STORAGE_KEY_VERSION = "tradeAnalytics_version";
 
 
@@ -1535,4 +1535,5 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 });
+
 
