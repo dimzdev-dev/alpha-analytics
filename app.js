@@ -3,7 +3,7 @@ const STORAGE_KEY_TRADES = "tradeAnalytics_trades";
 const STORAGE_KEY_META = "tradeAnalytics_meta";
 const DEFAULT_CAPITAL = 10000;
 const IMPORT_DELAY_MS = 1200;
-const CURRENT_VERSION = "1.6.1"; // même valeur que dans version.json
+const CURRENT_VERSION = "1.7.1"; // même valeur que dans version.json
 const STORAGE_KEY_VERSION = "tradeAnalytics_version";
 const VERSION_CHECK_URL = "https://raw.githubusercontent.com/dimzdev-dev/alpha-analytics/refs/heads/main/version.json";
 
@@ -1551,3 +1551,4 @@ document.addEventListener("DOMContentLoaded", () => {
 }
 
 });
+
